@@ -6,8 +6,18 @@ package edu.upc.epsevg.prop.cristinaroger;
 
 /**
  *
- * @author crist
+ * Clase base per algorismes de cerca per a Othello
+ * 
+ * @author cristina
+ * @author roger
  */
-public class OthelloSearchAlgorithm {
+public abstract class OthelloSearchAlgorithm {
     
+    /**
+     * 
+     * @param color El color de la propera fitxa
+     * @param maxDepth La profunditat maxima a la que cercar
+     * @return El millor moviment utiliztant la heuristica corresponent
+     */
+    public abstract int findNextBestMove(int color, int maxDepth);
 }

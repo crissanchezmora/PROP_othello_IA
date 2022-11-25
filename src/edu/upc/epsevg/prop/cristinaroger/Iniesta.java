@@ -23,6 +23,32 @@ public class Iniesta implements IPlayer, IAuto{
     private String name;
     private GameStatus s;
     
+    public Iniesta(String name){
+        this.name = name;
+    }
+    
+    /**
+     * 
+     * @param s Tauler i estat actual del joc.
+     * @return el moviment que fa le jugador.
+     */
+    public Move move(GameStatus s) {
+        
+        ArrayList<Point> moves = s.getMoves();
+        if(moves.isEmpty())
+        {
+            // no podem moure, el moviment (de tipus Point) es passa null.
+            return new Move(null, 0L,0,  SearchType.RANDOM); 
+        } else {
+           
+        }
+        return new Move ();
+    }
+    
+    /**
+     * Ens avisa que hem de parar la cerca en curs perquè s'ha exhaurit el temps
+     * de joc.
+     */
     public void timeout(){
         System.out.println("You are so slow...");
     }

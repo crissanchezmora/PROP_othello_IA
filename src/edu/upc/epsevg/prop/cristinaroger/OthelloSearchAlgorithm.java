@@ -15,9 +15,12 @@ public abstract class OthelloSearchAlgorithm {
     
     /**
      * 
+     * 
+     * 
+     * @param t El estat actual del tauler de joc
      * @param color El color de la propera fitxa
      * @param maxDepth La profunditat maxima a la que cercar
      * @return El millor moviment utiliztant la heuristica corresponent
      */
-    public abstract int findNextBestMove(int color, int maxDepth);
+    public abstract int findNextBestMove(TaulerWithHeuristic t, int color, int maxDepth);
 }

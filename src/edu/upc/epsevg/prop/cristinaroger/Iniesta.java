@@ -38,7 +38,7 @@ public class Iniesta implements IPlayer, IAuto{
         if(moves.isEmpty())
         {
             // no podem moure, el moviment (de tipus Point) es passa null.
-            return new Move(null, 0L,0,  SearchType.RANDOM); 
+            return new Move(null, 0L,0,  ); 
         } else {
            
         }
@@ -48,6 +48,7 @@ public class Iniesta implements IPlayer, IAuto{
     /**
      * Ens avisa que hem de parar la cerca en curs perquè s'ha exhaurit el temps
      * de joc.
+     * TODO: printear hasta dnd ha llegado en este caso.
      */
     public void timeout(){
         System.out.println("You are so slow...");

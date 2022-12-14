@@ -4,6 +4,8 @@
  */
 package edu.upc.epsevg.prop.cristinaroger;
 
+import java.awt.Point;
+
 /**
  *
  * Clase base per algorismes de cerca per a Othello
@@ -22,5 +24,5 @@ public abstract class OthelloSearchAlgorithm {
      * @param maxDepth La profunditat maxima a la que cercar
      * @return El millor moviment utiliztant la heuristica corresponent
      */
-    public abstract int findNextBestMove(TaulerWithHeuristic t, int color, int maxDepth);
+    public abstract Point findNextBestMove(TaulerWithHeuristic t, int color, int maxDepth);
 }

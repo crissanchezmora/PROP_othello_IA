@@ -3,13 +3,17 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
 package edu.upc.epsevg.prop.cristinaroger;
-
+import edu.upc.epsevg.prop.othello.Board;
+import edu.upc.epsevg.prop.othello.GameStatus;
+import java.awt.Point;
+import java.util.HashMap;
+import java.util.HashSet;
 /**
  *
  * @author cristina
  * @author roger
  */
-public class TaulerWithHeuristic {
+public class TaulerWithHeuristic extends GameStatus{
     
     /**
      * Max value to use when finding a winning state
@@ -20,6 +24,7 @@ public class TaulerWithHeuristic {
      * Min value to use when finding a losing state
      */
     public final static int MIN_VAL = Integer.MIN_VALUE+1;// -2147483647
+
     
     /**
      * Auxiliary enum to link a player with its color
@@ -76,8 +81,41 @@ public class TaulerWithHeuristic {
     }
     
     /**
-     * Internal wrapped Tauler
+     * Internal wrapped Board
      */
-    private final Tauler _t;
+    private Board _t;
     
+    /**
+     * Last applied movement
+     */
+    private int _lastMovement;
+    
+    /**
+     * Color of the last applied movement
+     */
+    private int _lastColor;
+    
+    /**
+     * Number of movements applied
+     */
+    private int _numMovements;
+    
+        
+    public TaulerWithHeuristic(Board _t, int _lastMovement, int _lastColor, int _numMovements) {
+        this._t = _t;
+        this._lastMovement = _lastMovement;
+        this._lastColor = _lastColor;
+        this._numMovements = _numMovements;
+    }
+    
+    public int getHeuristic(int color){
+        //Check if the game was won
+        if (this.isGameOver()){
+            if (this.GetWinner() == this.getCurrentPlayer()) return MAX_VAL;
+        }
+        
+            
+        
+     return 0;
+    }
 }

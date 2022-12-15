@@ -4,6 +4,7 @@
  */
 package edu.upc.epsevg.prop.cristinaroger;
 
+import edu.upc.epsevg.prop.othello.CellType;
 import java.awt.Point;
 
 /**
@@ -24,5 +25,5 @@ public abstract class OthelloSearchAlgorithm {
      * @param maxDepth La profunditat maxima a la que cercar
      * @return El millor moviment utiliztant la heuristica corresponent
      */
-    public abstract Point findNextBestMove(TaulerWithHeuristic t, int color, int maxDepth);
+    public abstract Point findNextBestMove(TaulerWithHeuristic t, CellType color, int maxDepth);
 }

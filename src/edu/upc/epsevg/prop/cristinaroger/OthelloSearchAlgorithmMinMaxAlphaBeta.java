@@ -3,6 +3,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
 package edu.upc.epsevg.prop.cristinaroger;
+import edu.upc.epsevg.prop.othello.CellType;
 import java.awt.Point;
 import java.util.ArrayList;
 
@@ -26,7 +27,7 @@ public class OthelloSearchAlgorithmMinMaxAlphaBeta extends OthelloSearchAlgorith
     /**
      * Variable to hold the current color of the root node
      */
-    int _current_root_color;
+    CellType _current_root_color;
     
     /**
      * Find the best column to put the next piece of given color of the given
@@ -38,7 +39,7 @@ public class OthelloSearchAlgorithmMinMaxAlphaBeta extends OthelloSearchAlgorith
      * @return The best found movement using C4Heuristic
      */
     @Override
-    public Point findNextBestMove(TaulerWithHeuristic t, int color, int maxDepth) {
+    public Point findNextBestMove(TaulerWithHeuristic t, CellType color, int maxDepth) {
         if(maxDepth < 0)
             return new Point (-1,-1);
         
@@ -55,7 +56,12 @@ public class OthelloSearchAlgorithmMinMaxAlphaBeta extends OthelloSearchAlgorith
         int alpha = TaulerWithHeuristic.MIN_VAL;
         int beta = TaulerWithHeuristic.MAX_VAL;
         
+        System.out.println("Jugador Actual Minmax:" + t.getCurrentPlayer());
         ArrayList <Point> moves = t.getMoves();
+        for (int j = 0; j < moves.size(); j++){
+            System.out.println("Movimiento: " +  moves.get(j));
+        }
+        System.out.println("Jugador Actual Minmax2:" + t.getCurrentPlayer());
         //Check valid movement
         if (!moves.isEmpty()){
             for (int i = 0; i < moves.size(); i++){

@@ -1,5 +1,6 @@
 package edu.upc.epsevg.prop.othello;
 
+import edu.upc.epsevg.prop.cristinaroger.Iniesta;
 import edu.upc.epsevg.prop.othello.players.HumanPlayer;
 import edu.upc.epsevg.prop.othello.players.RandomPlayer;
 import edu.upc.epsevg.prop.othello.Level;
@@ -24,12 +25,13 @@ public class Game {
             @Override
             public void run() {
                 
-                IPlayer player1 = new RandomPlayer("Crazy Ivan");
+                //IPlayer player1 = new RandomPlayer("Crazy Ivan");
                 //IPlayer player1 = new HumanPlayer("Human1");
+                IPlayer player1 = new Iniesta (1);
                 IPlayer player2 = new DesdemonaPlayer(1);//GB
 
                                 
-                new Board(player1 , player2, 2, false);
+                new Board(player1 , player2, 2, true);
              }
         });
     }

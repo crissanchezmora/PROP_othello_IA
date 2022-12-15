@@ -32,11 +32,6 @@ public class TaulerWithHeuristic extends GameStatus{
     private GameStatus _t;
     
     /**
-     * Last applied movement
-     */
-    private Point _lastMovement;
-    
-    /**
      * Color of the last applied movement
      */
     private int _lastColor;
@@ -46,9 +41,8 @@ public class TaulerWithHeuristic extends GameStatus{
      */
     private int _numMovements;
        
-    public TaulerWithHeuristic(GameStatus _t, Point _lastMovement, int _lastColor, int _numMovements) {
+    public TaulerWithHeuristic(GameStatus _t, int _lastColor, int _numMovements) {
         this._t = _t;
-        this._lastMovement = _lastMovement;
         this._lastColor = _lastColor;
         this._numMovements = _numMovements;
     }

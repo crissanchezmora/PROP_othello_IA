@@ -65,6 +65,9 @@ public class OthelloSearchAlgorithmMinMaxAlphaBeta extends OthelloSearchAlgorith
         //Check valid movement
         if (!moves.isEmpty()){
             for (int i = 0; i < moves.size(); i++){
+                if(!t.canMove(moves.get(i), t.getCurrentPlayer())){
+                    continue;
+                }
                 //Create copy and move piece
                 TaulerWithHeuristic nextT = t;
                 nextT.movePiece(moves.get(i));

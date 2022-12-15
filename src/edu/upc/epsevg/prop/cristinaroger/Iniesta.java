@@ -20,7 +20,7 @@ import java.util.Random;
  */
 public class Iniesta implements IPlayer, IAuto{
     
-    private String name;
+    private final String name;
     private GameStatus s;
     
     /**
@@ -42,7 +42,7 @@ public class Iniesta implements IPlayer, IAuto{
         this.name = "Iniesta";
         this._maxDepth = maxDepth;
         this._searchAlg = new OthelloSearchAlgorithmMinMaxAlphaBeta();
-        _t = new TaulerWithHeuristic(s, new Point(), 0, 0);
+        _t = new TaulerWithHeuristic(s, 0, 0);
     }
     
     /**
@@ -51,7 +51,32 @@ public class Iniesta implements IPlayer, IAuto{
      */
     public Move move(GameStatus s) {
         System.out.println("Jugador actual" + s.getCurrentPlayer());
+        System.out.println("Jugador actual2" + _t.getCurrentPlayer());
         ArrayList<Point> moves = s.getMoves();
+        
+        System.out.println(_t.toString());
+        System.out.println(s.toString());
+        
+        for (int i = 0; i < s.getSize(); i++){
+            for (int j = 0; j < s.getSize(); j++){
+                CellType aa = s.getPos(j, i);
+                if (aa == CellType.EMPTY){
+                    System.out.print("0 ");
+                } else if (aa == CellType.PLAYER1){
+                    System.out.print("1 ");
+                } else {
+                    System.out.print("2 ");
+                }
+             
+                //System.out.print(aa + " ");
+            }
+            System.out.println("");
+        }
+        
+        /*for (int j = 0; j < moves.size(); j++){
+            System.out.println("MovimientoIniesta: " +  moves.get(j));
+        }*/
+        
         if(moves.isEmpty())
         {
             // no podem moure, el moviment (de tipus Point) es passa null.
@@ -60,6 +85,7 @@ public class Iniesta implements IPlayer, IAuto{
            
            Point mov = _searchAlg.findNextBestMove(_t, _t.getCurrentPlayer(), _maxDepth);
            Move move = new Move (mov, 5, 6, SearchType.MINIMAX);
+           //_t.movePiece(mov);
            return move;
         }
         

@@ -4,6 +4,7 @@
  */
 package edu.upc.epsevg.prop.cristinaroger;
 import edu.upc.epsevg.prop.othello.CellType;
+import edu.upc.epsevg.prop.othello.GameStatus;
 import java.awt.Point;
 import java.util.ArrayList;
 
@@ -30,16 +31,26 @@ public class OthelloSearchAlgorithmMinMaxAlphaBeta extends OthelloSearchAlgorith
     CellType _current_root_color;
     
     /**
+     * Max value to use when finding a winning state
+     */
+    public final static int MAX_VAL = Integer.MAX_VALUE;  //  2147483647
+    
+    /**
+     * Min value to use when finding a losing state
+     */
+    public final static int MIN_VAL = Integer.MIN_VALUE+1;// -2147483647
+    
+    /**
      * Find the best column to put the next piece of given color of the given
      * game t using MiniMax with alpha-beta pruning
      * 
-     * @param t The state of game
+     * @param s The state of game
      * @param color The color of the next piece
      * @param maxDepth The maximum depth to conduct the search
      * @return The best found movement using C4Heuristic
      */
     @Override
-    public Point findNextBestMove(TaulerWithHeuristic t, CellType color, int maxDepth) {
+    public Point findNextBestMove(GameStatus s, CellType color, int maxDepth){
         if(maxDepth < 0)
             return new Point (-1,-1);
         
@@ -55,21 +66,19 @@ public class OthelloSearchAlgorithmMinMaxAlphaBeta extends OthelloSearchAlgorith
         
         int alpha = TaulerWithHeuristic.MIN_VAL;
         int beta = TaulerWithHeuristic.MAX_VAL;
-        
-        System.out.println("Jugador Actual Minmax:" + t.getCurrentPlayer());
-        ArrayList <Point> moves = t.getMoves();
+
+        ArrayList <Point> moves = s.getMoves();
         for (int j = 0; j < moves.size(); j++){
-            System.out.println("Movimiento: " +  moves.get(j));
+            System.out.println("Movimientos s: " +  moves.get(j));
         }
-        System.out.println("Jugador Actual Minmax2:" + t.getCurrentPlayer());
         //Check valid movement
         if (!moves.isEmpty()){
             for (int i = 0; i < moves.size(); i++){
-                if(!t.canMove(moves.get(i), t.getCurrentPlayer())){
+                if(!s.canMove(moves.get(i), s.getCurrentPlayer())){
                     continue;
                 }
                 //Create copy and move piece
-                TaulerWithHeuristic nextT = t;
+                GameStatus nextT = new GameStatus(s);
                 nextT.movePiece(moves.get(i));
                 
                 //Evaluate movement
@@ -107,18 +116,18 @@ public class OthelloSearchAlgorithmMinMaxAlphaBeta extends OthelloSearchAlgorith
      * @param beta Upper bound to search
      * @return The worst found movement using C4Heuristic
      */
-    private int minmax(TaulerWithHeuristic t, int maxDepth, boolean isMax, int alpha, int beta) {
+    private int minmax(GameStatus s, int maxDepth, boolean isMax, int alpha, int beta) {
         _current_node_exploration_count++;
-        if(maxDepth <= 0 || t.isGameOver()) {
+        if(maxDepth <= 0 || s.isGameOver()) {
             _current_leaf_exploration_count++;
-            return t.getHeuristic(_current_root_color);
+            return getHeuristic(s);
         }
         
         int heuristic = isMax ? Integer.MIN_VALUE : Integer.MAX_VALUE;
-        ArrayList <Point> moves = t.getMoves();
+        ArrayList <Point> moves = s.getMoves();
         for (int i = 0; i < moves.size(); i++) {
             // Move
-            TaulerWithHeuristic nextT = t;
+            GameStatus nextT = s;
             try { nextT.movePiece(moves.get(i)); } catch (Exception e) {}
             
             // Evaluate movement
@@ -144,10 +153,22 @@ public class OthelloSearchAlgorithmMinMaxAlphaBeta extends OthelloSearchAlgorith
                 
                 // Update beta (upper bound)
                 beta = Math.min(beta, heuristic);
-            }
-            
+            }  
         }
         
         return heuristic;
     }
+
+    private int getHeuristic(GameStatus s) {
+        //Check if the game was won
+        if (s.isGameOver()){
+            if (s.GetWinner() == s.getCurrentPlayer()) return MAX_VAL;
+            return MIN_VAL;
+        }
+        
+        CellType rival  = CellType.opposite(s.getCurrentPlayer());
+        CellType player = s.getCurrentPlayer();
+        
+     return s.getScore(player) - s.getScore(rival);
+    }    
 }

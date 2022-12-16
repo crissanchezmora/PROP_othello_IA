@@ -25,32 +25,12 @@ public class TaulerWithHeuristic extends GameStatus{
      * Min value to use when finding a losing state
      */
     public final static int MIN_VAL = Integer.MIN_VALUE+1;// -2147483647
-
-    /**
-     * Internal wrapped GameStatus
-     */
-    private GameStatus _t;
-    
-    /**
-     * Color of the last applied movement
-     */
-    private int _lastColor;
-    
-    /**
-     * Number of movements applied
-     */
-    private int _numMovements;
-       
-    public TaulerWithHeuristic(GameStatus _t, int _lastColor, int _numMovements) {
-        this._t = _t;
-        this._lastColor = _lastColor;
-        this._numMovements = _numMovements;
-    }
     
     public int getHeuristic(CellType color){
         //Check if the game was won
         if (this.isGameOver()){
             if (this.GetWinner() == this.getCurrentPlayer()) return MAX_VAL;
+            return MIN_VAL;
         }
         
         CellType rival  = CellType.opposite(this.getCurrentPlayer());

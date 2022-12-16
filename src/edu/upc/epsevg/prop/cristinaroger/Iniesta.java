@@ -4,7 +4,6 @@
  */
 package edu.upc.epsevg.prop.cristinaroger;
 
-import edu.upc.epsevg.prop.othello.CellType;
 import edu.upc.epsevg.prop.othello.GameStatus;
 import edu.upc.epsevg.prop.othello.IAuto;
 import edu.upc.epsevg.prop.othello.IPlayer;
@@ -12,7 +11,6 @@ import edu.upc.epsevg.prop.othello.Move;
 import edu.upc.epsevg.prop.othello.SearchType;
 import java.awt.Point;
 import java.util.ArrayList;
-import java.util.Random;
 /**
  * Jugador basic
  * @author cristina
@@ -20,58 +18,38 @@ import java.util.Random;
  */
 public class Iniesta implements IPlayer, IAuto{
     
-    private final String name;
-    private GameStatus s;
-    
-    /**
-     * Internal TaulerWithHeuristic to cache calculations from other turns
-     */
-    private TaulerWithHeuristic _t;
+    private String name;
     
     /**
      * The max depth to do the searches
      */
-    private int _maxDepth = 0;
-    
+    private int _maxDepth = 4;
     /**
      * The search algorithm to use
      */
     private OthelloSearchAlgorithm _searchAlg;
     
-    public Iniesta (int maxDepth) {
-        this.name = "Iniesta";
-        this._maxDepth = maxDepth;
-        this._searchAlg = new OthelloSearchAlgorithmMinMaxAlphaBeta();
-        _t = new TaulerWithHeuristic(s, 0, 0);
+
+    
+    public Iniesta (String name) {
+        this.name = name;
+        this._searchAlg = new OthelloSearchAlgorithmMinMaxAlphaBeta();  
     }
     
     /**
      * @param s Tauler i estat actual del joc.
      * @return el moviment que fa le jugador.
      */
+    @Override
     public Move move(GameStatus s) {
-        System.out.println("Jugador actual" + s.getCurrentPlayer());
-        System.out.println("Jugador actual2" + _t.getCurrentPlayer());
-        ArrayList<Point> moves = s.getMoves();
         
-        System.out.println(_t.toString());
+        System.out.println("Jugador actual" + s.getCurrentPlayer());
+        
+        ArrayList<Point> moves = s.getMoves();
+
+        System.out.println("Tablero s antes de turno");
         System.out.println(s.toString());
         
-        for (int i = 0; i < s.getSize(); i++){
-            for (int j = 0; j < s.getSize(); j++){
-                CellType aa = s.getPos(j, i);
-                if (aa == CellType.EMPTY){
-                    System.out.print("0 ");
-                } else if (aa == CellType.PLAYER1){
-                    System.out.print("1 ");
-                } else {
-                    System.out.print("2 ");
-                }
-             
-                //System.out.print(aa + " ");
-            }
-            System.out.println("");
-        }
         
         /*for (int j = 0; j < moves.size(); j++){
             System.out.println("MovimientoIniesta: " +  moves.get(j));
@@ -83,9 +61,13 @@ public class Iniesta implements IPlayer, IAuto{
             return new Move(null, 0L,0, SearchType.MINIMAX ); 
         } else {
            
-           Point mov = _searchAlg.findNextBestMove(_t, _t.getCurrentPlayer(), _maxDepth);
+           Point mov = _searchAlg.findNextBestMove(s ,s.getCurrentPlayer(), _maxDepth);
+           System.out.println("Celda en s: " + s.getPos(mov));
            Move move = new Move (mov, 5, 6, SearchType.MINIMAX);
-           //_t.movePiece(mov);
+
+        System.out.println("Tablero s depsues de turno");
+        System.out.println(s.toString());
+        
            return move;
         }
         
@@ -107,7 +89,7 @@ public class Iniesta implements IPlayer, IAuto{
     
     @Override
     public String getName(){
-        return "Player("+ name + ")";
+        return this.name;
     }
     
     

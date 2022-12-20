@@ -24,7 +24,7 @@ public class Iniesta implements IPlayer, IAuto{
     /**
      * The max depth to do the searches
      */
-    private int _maxDepth = 4;
+    private final int _maxDepth = 4;
     /**
      * The search algorithm to use
      */
@@ -50,8 +50,8 @@ public class Iniesta implements IPlayer, IAuto{
         
         ArrayList<Point> moves = s.getMoves();
 
-        System.out.println("Tablero s antes de turno");
-        System.out.println(s.toString());
+        //System.out.println("Tablero s antes de turno");
+        //System.out.println(s.toString());
         
         
         /*for (int j = 0; j < moves.size(); j++){

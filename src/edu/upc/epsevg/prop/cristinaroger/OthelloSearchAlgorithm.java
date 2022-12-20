@@ -22,9 +22,10 @@ public abstract class OthelloSearchAlgorithm {
      * 
      * 
      * @param s El estat actual del tauler de joc
-     * @param color El color de la propera fitxa
      * @param maxDepth La profunditat maxima a la que cercar
      * @return El millor moviment utiliztant la heuristica corresponent
      */
-    public abstract Point findNextBestMove(GameStatus s, CellType color, int maxDepth);
+    public abstract Point findNextBestMove(GameStatus s, CellType whoAmI, int maxDepth);
+
+    public abstract Point IDS(GameStatus s, CellType whoAmI);
 }

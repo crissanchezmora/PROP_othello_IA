@@ -4,6 +4,7 @@
  */
 package edu.upc.epsevg.prop.cristinaroger;
 
+import edu.upc.epsevg.prop.othello.CellType;
 import edu.upc.epsevg.prop.othello.GameStatus;
 import edu.upc.epsevg.prop.othello.IAuto;
 import edu.upc.epsevg.prop.othello.IPlayer;
@@ -29,11 +30,13 @@ public class Iniesta implements IPlayer, IAuto{
      */
     private OthelloSearchAlgorithm _searchAlg;
     
+    public CellType whoAmI;
+    
 
     
     public Iniesta (String name) {
         this.name = name;
-        this._searchAlg = new OthelloSearchAlgorithmMinMaxAlphaBeta();  
+        this._searchAlg = new OthelloSearchAlgorithmMinMaxAlphaBeta(); 
     }
     
     /**
@@ -42,8 +45,8 @@ public class Iniesta implements IPlayer, IAuto{
      */
     @Override
     public Move move(GameStatus s) {
-        
-        System.out.println("Jugador actual" + s.getCurrentPlayer());
+        whoAmI = s.getCurrentPlayer();
+        //System.out.println("Jugador actual" + s.getCurrentPlayer());
         
         ArrayList<Point> moves = s.getMoves();
 
@@ -57,20 +60,19 @@ public class Iniesta implements IPlayer, IAuto{
         
         if(moves.isEmpty())
         {
-            // no podem moure, el moviment (de tipus Point) es passa null.
-            return new Move(null, 0L,0, SearchType.MINIMAX ); 
-        } else {
-           
-           Point mov = _searchAlg.findNextBestMove(s ,s.getCurrentPlayer(), _maxDepth);
-           System.out.println("Celda en s: " + s.getPos(mov));
+            // no podem moure, saltme torn.
+            s.skipTurn();
+        } 
+        //else {
+           Point mov = _searchAlg.IDS(s , whoAmI);
+           //System.out.println("Celda en s: " + s.getPos(mov));
            Move move = new Move (mov, 5, 6, SearchType.MINIMAX);
 
-        System.out.println("Tablero s depsues de turno");
-        System.out.println(s.toString());
+        //System.out.println("Tablero s despues de turno");
+        //System.out.println(s.toString());
         
            return move;
-        }
-        
+        //}  
     }
     
     /**

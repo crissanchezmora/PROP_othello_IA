@@ -65,7 +65,10 @@ public class Iniesta implements IPlayer, IAuto{
         } 
         //else {
            Point mov = _searchAlg.IDS(s , whoAmI);
-           //System.out.println("Celda en s: " + s.getPos(mov));
+           
+           System.out.println("/////////////////////////////////////////////////////////////////////////");
+           System.out.println("MOVIMIENTO ELEGIDO: " + mov);
+           System.out.println("/////////////////////////////////////////////////////////////////////////");
            Move move = new Move (mov, 5, 6, SearchType.MINIMAX);
 
         //System.out.println("Tablero s despues de turno");

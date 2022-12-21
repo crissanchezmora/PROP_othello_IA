@@ -69,10 +69,10 @@ public class OthelloSearchAlgorithmMinMaxAlphaBeta extends OthelloSearchAlgorith
         
         // Do search
         int bestHeuristic = Integer.MIN_VALUE;
-        Point bestMove = new Point (-1,-1);
         int alpha = TaulerWithHeuristic.MIN_VAL;
         int beta = TaulerWithHeuristic.MAX_VAL;
         ArrayList <Point> moves = s.getMoves();
+        Point bestMove = new Point (-1, -1);
         
         System.out.println("bestHeuristic: " + bestHeuristic + ' ' +
                             "bestMove: " + bestMove + ' ' +
@@ -104,8 +104,8 @@ public class OthelloSearchAlgorithmMinMaxAlphaBeta extends OthelloSearchAlgorith
                 //Create copy and move piece
                 GameStatus nextT = new GameStatus(s);
                 
-                System.out.println("nextT(copy of s): ");
-                System.out.println(nextT.toString());
+                //System.out.println("nextT(copy of s): ");
+                //System.out.println(nextT.toString());
                 System.out.println("movement to apply to nextT: " + moves.get(i));
                 
                 nextT.movePiece(moves.get(i));
@@ -113,35 +113,56 @@ public class OthelloSearchAlgorithmMinMaxAlphaBeta extends OthelloSearchAlgorith
                 System.out.println("nextT (with movement): ");
                 System.out.println(nextT.toString());
                 
-                //Evaluate movement
+               if (nextT.isGameOver()){
                 
-                System.out.println("Now we will enter minmax with depth -1 and isMax false");
+                   if (nextT.GetWinner() == nextT.getCurrentPlayer()) {
+
+                        System.out.println("Entered IF: winner = current player | inside FindNextBestMove");
+    
+                        bestHeuristic = MAX_VAL;
+                        bestMove = moves.get(i);
+                    }
+
+                   else{
+                       System.out.println("Returning min_val to findNextBestMove");
+
+                        bestHeuristic = MIN_VAL;
+                       bestMove = moves.get(i);
+                    }   
+                }
                 
-                int movHeur = minmax(nextT, maxDepth-1, false, alpha, beta);
-                
-                System.out.println("Returned from minmax depth -1 and isMax false");
-                
-                if(bestHeuristic < movHeur || bestMove == new Point (-1,-1)) {
-                    
-                    System.out.println("Entered IF: bestHeuristic<movHeur or bestMove = -1 -1 | inside findNextBestMove");
-                    
-                    System.out.println("1 movHeur: " + movHeur);
-                    System.out.println("1 BestMove: " + bestMove);
-                    System.out.println("1 BestHeur: " + bestHeuristic);
-                    
-                    bestHeuristic = movHeur;
-                    bestMove = moves.get(i);
-                    
-                    System.out.println("2 movHeur: " + movHeur);
-                    System.out.println("2 BestMove: " + bestMove);
-                    System.out.println("2 BestHeur: " + bestHeuristic);
-                }   
+                //else {
+                    System.out.println("Now we will enter minmax with depth -1 and isMax false");
+
+                    int movHeur = minmax(nextT, maxDepth-1, false, alpha, beta);
+
+                    System.out.println("Returned from minmax depth -1 and isMax false");
+
+                    if(bestHeuristic < movHeur || bestMove.equals(new Point(-1,-1))) {
+
+                        System.out.println("Entered IF: bestHeuristic<movHeur or bestMove = -1 -1 | inside findNextBestMove");
+
+                        System.out.println("1 movHeur: " + movHeur);
+                        System.out.println("1 BestMove: " + bestMove);
+                        System.out.println("1 BestHeur: " + bestHeuristic);
+
+                        bestHeuristic = movHeur;
+                        bestMove = moves.get(i);
+
+                        System.out.println("2 movHeur: " + movHeur);
+                        System.out.println("2 BestMove: " + bestMove);
+                        System.out.println("2 BestHeur: " + bestHeuristic);
+                    }   
+                //} 
             }
-       }
-        if (bestMove == new Point (-1,-1)){
+        }
+        
+//        System.out.println("BestMove in findNextBestMove before IF: " + bestMove);
+        
+        if (bestMove.equals(new Point (-1, -1))){
             
-            System.out.println("Entered IF: bestMove = -1 -1 | inside findNextBestMove");
-            System.out.println("No moves available. Skip Turn");
+//            System.out.println("Entered IF: bestMove = -1 -1 | inside findNextBestMove");
+//            System.out.println("No moves available. Skip Turn");
             
             s.skipTurn();
         }
@@ -157,7 +178,7 @@ public class OthelloSearchAlgorithmMinMaxAlphaBeta extends OthelloSearchAlgorith
                            "and " + _current_node_exploration_count + " nodes " +
                            "in " + incr_ms  + "ms (" + incr_s + "s)");
         
-        System.out.println("Returning bestMove to findNextBestMovement");
+        System.out.println("Returning bestMove: " + bestMove +" to findNextBestMovement depth: " + maxDepth);
         
         return bestMove;
     }
@@ -193,84 +214,92 @@ public class OthelloSearchAlgorithmMinMaxAlphaBeta extends OthelloSearchAlgorith
             
             System.out.println("returning getHeuristic(s) to minmax");
             
-            return getHeuristic(s);
+            return getHeuristic(s, false);
         }
         
         int heuristic = isMax ? Integer.MIN_VALUE : Integer.MAX_VALUE;
         ArrayList <Point> moves = s.getMoves();
         
-        System.out.println("heuristic:" + heuristic);
-        System.out.println("moves: ");
-        for (int i = 0; i < moves.size(); i++){
-            System.out.println(moves.get(i));
-        }
+//        System.out.println("heuristic:" + heuristic);
+//        System.out.println("moves: ");
+//        for (int i = 0; i < moves.size(); i++){
+//            System.out.println(moves.get(i));
+//        }
  
         if (!moves.isEmpty()){
             
-            System.out.println("Entered IF: moves not empty | inside minmax");
-            System.out.println("moves size: " + moves.size());
+//            System.out.println("Entered IF: moves not empty | inside minmax");
+//            System.out.println("moves size: " + moves.size());
             
             for (int i = 0; i < moves.size(); i++) {
                 
-                System.out.println("Entered FOR | inside minmax");
-                System.out.println("i = " + i);
+//                System.out.println("Entered FOR | inside minmax");
+//                System.out.println("i = " + i);
                 
                 // Move
 
                 GameStatus nextT = new GameStatus(s);
-                System.out.println("nextT (copy of s): ");
-                System.out.println(nextT.toString());
+                //System.out.println("nextT (copy of s): ");
+                //System.out.println(nextT.toString());
                 
                 try { nextT.movePiece(moves.get(i)); } catch (Exception e) {}
                 
-                System.out.println("NextT(movement applied): " + moves.get(i));
-                System.out.println(nextT.toString());
+                int movHeur;
+                if (nextT.isGameOver()){
+                    movHeur = getHeuristic(nextT, true);
+                }
+                else{
+                    movHeur = minmax(nextT, maxDepth-1, !isMax, alpha, beta);
+                }
+                
+//                System.out.println("NextT(movement applied): " + moves.get(i));
+//                System.out.println(nextT.toString());
 
                 // Evaluate movement
                 
-                System.out.println("About to call minmax with -1 depht and !isMax");
+//                System.out.println("About to call minmax with -1 depht and !isMax");
                 
-                int movHeur = minmax(nextT, maxDepth-1, !isMax, alpha, beta);
                 
-                System.out.println("returned minmax depht -1 and !isMax");
-                System.out.println("MovHeur: " + movHeur);
+                
+//                System.out.println("returned minmax depht -1 and !isMax");
+//                System.out.println("MovHeur: " + movHeur);
 
                 if(isMax) {
                     
-                    System.out.println("Entered IF: isMax | inside minmax");
+//                    System.out.println("Entered IF: isMax | inside minmax");
                     
                     // Update max heuristic
                     heuristic = Math.max(heuristic, movHeur);
                     
-                    System.out.println("Heuristic: " + heuristic);
+//                    System.out.println("Heuristic: " + heuristic);
 
                     // Prune if we exceeded upper bound
                     if (beta <= heuristic){
                         
-                        System.out.println("Entered IF: beta <= heuristic | inside minmax");
-                        System.out.println("Breaking FOR. i = " + i);
+//                        System.out.println("Entered IF: beta <= heuristic | inside minmax");
+//                        System.out.println("Breaking FOR. i = " + i);
                         
                         break;
                     }
                     // Update alpha (lower bound)
                     alpha = Math.max(alpha, heuristic);
                     
-                    System.out.println("Alpha: " + alpha);
+//                    System.out.println("Alpha: " + alpha);
                     
                 } else {
                     
-                    System.out.println("Entered ELSE: !isMax | inside minmax");
+//                    System.out.println("Entered ELSE: !isMax | inside minmax");
                     
                     // Update min heuristic
                     heuristic = Math.min(heuristic, movHeur);
                     
-                    System.out.println("Heuristic: " + heuristic);
+//                    System.out.println("Heuristic: " + heuristic);
 
                     // Prune if we exceeded lower bound
                     if (heuristic <= alpha){
                         
-                        System.out.println("Entered IF: heuristic <= alpha | inside minmax");
-                        System.out.println("Breaking FOR. i = " + i);
+//                        System.out.println("Entered IF: heuristic <= alpha | inside minmax");
+//                        System.out.println("Breaking FOR. i = " + i);
                         
                         break;
                     }
@@ -278,18 +307,18 @@ public class OthelloSearchAlgorithmMinMaxAlphaBeta extends OthelloSearchAlgorith
                     // Update beta (upper bound)
                     beta = Math.min(beta, heuristic);
                     
-                    System.out.println("Beta: " + beta);
+//                    System.out.println("Beta: " + beta);
                 }  
             }
         }
-        System.out.println("Returning heuristic to minmax");
+        System.out.println("Returning heuristic: " + heuristic +" to minmax");
         return heuristic;
     }
 
-    private int getHeuristic(GameStatus s) {
+    private int getHeuristic(GameStatus s, boolean Ended) {
         
-        System.out.println("Entered getHeuristic. s: ");
-        System.out.println(s.toString());
+//        System.out.println("Entered getHeuristic. s: ");
+//        System.out.println(s.toString());
         
         //Check if the game was won
         if (s.isGameOver()){
@@ -298,24 +327,40 @@ public class OthelloSearchAlgorithmMinMaxAlphaBeta extends OthelloSearchAlgorith
             System.out.println("jugador actual juego terminado: " + s.getCurrentPlayer());
             System.out.println("jugador actual juego ganado:    " + s.GetWinner());
             
-            if (s.GetWinner() == s.getCurrentPlayer()) {
-                
-                System.out.println("Entered IF: winner = current player | inside getHeuristic");
-                System.out.println("Returning max_val to getHeuristic");
-                
-                return MAX_VAL;
+            if (!Ended){
+                if (s.GetWinner() == CellType.opposite(s.getCurrentPlayer())) {
+
+    //                System.out.println("Entered IF: winner = current player | inside getHeuristic");
+    //                System.out.println("Returning max_val to getHeuristic");
+
+                    return MAX_VAL;
+                }
+
+    //            System.out.println("Returning min_val to getHeuristic");
+
+                return MIN_VAL;
+            }
+            else {
+                if (s.GetWinner() == s.getCurrentPlayer()) {
+
+    //                System.out.println("Entered IF: winner = current player | inside getHeuristic");
+    //                System.out.println("Returning max_val to getHeuristic");
+
+                    return MAX_VAL;
+                }
+
+    //            System.out.println("Returning min_val to getHeuristic");
+
+                return MIN_VAL;
             }
             
-            System.out.println("Returning min_val to getHeuristic");
-            
-            return MIN_VAL;
         }
         
         CellType rival  = CellType.opposite(s.getCurrentPlayer());
         CellType player = s.getCurrentPlayer();
         
-        System.out.println("Rival: " + rival + s.getScore(rival) + " Player: " + player + s.getScore(player));
-        System.out.println( "Returning: " + (s.getScore(rival) - s.getScore(player)) + " to getHeuristic");
+//        System.out.println("Rival: " + rival + s.getScore(rival) + " Player: " + player + s.getScore(player));
+//        System.out.println( "Returning: " + (s.getScore(rival) - s.getScore(player)) + " to getHeuristic");
         
      return s.getScore(player) - s.getScore(rival);
     }   
@@ -325,9 +370,10 @@ public class OthelloSearchAlgorithmMinMaxAlphaBeta extends OthelloSearchAlgorith
         
         Point bestMov = new Point(-1, -1);
         
-        for (int i = 1; i < 5; i++){
-            bestMov = findNextBestMove(s,whoAmI, i);
+        for (int i = 1; i < 2; i++){
+            bestMov = findNextBestMove(s,whoAmI, 4);
         }
+        
         return bestMov;
     }
 }

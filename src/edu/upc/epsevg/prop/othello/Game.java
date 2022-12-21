@@ -25,9 +25,9 @@ public class Game {
             @Override
             public void run() {
                 
-                IPlayer player1 = new RandomPlayer("Crazy Ivan");
+                IPlayer player2 = new RandomPlayer("Crazy Ivan");
                 //IPlayer player1 = new HumanPlayer("Human1");
-                IPlayer player2 = new Iniesta ("Iniesta");
+                IPlayer player1 = new Iniesta ("Iniesta");
                 //IPlayer player2 = new DesdemonaPlayer(4);//GB
 
                                 

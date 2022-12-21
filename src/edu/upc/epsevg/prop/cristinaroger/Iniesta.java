@@ -32,7 +32,7 @@ public class Iniesta implements IPlayer, IAuto{
     
     public CellType whoAmI;
     
-
+    private boolean time = false;
     
     public Iniesta (String name) {
         this.name = name;
@@ -49,33 +49,27 @@ public class Iniesta implements IPlayer, IAuto{
         //System.out.println("Jugador actual" + s.getCurrentPlayer());
         
         ArrayList<Point> moves = s.getMoves();
-
-        //System.out.println("Tablero s antes de turno");
-        //System.out.println(s.toString());
         
+        ArrayList<ArrayList<Point>> Stabilization = getStables(s);
+        ArrayList<Point> IniestaStable = Stabilization.get(0);
+        ArrayList<Point> RivalStable = Stabilization.get(1);
         
-        /*for (int j = 0; j < moves.size(); j++){
-            System.out.println("MovimientoIniesta: " +  moves.get(j));
-        }*/
-        
-        if(moves.isEmpty())
-        {
-            // no podem moure, saltme torn.
-            s.skipTurn();
-        } 
-        //else {
-           Point mov = _searchAlg.IDS(s , whoAmI);
-           
+        if(moves.isEmpty()) s.skipTurn(); 
+            Point mov = null;
+            int i = 0;
+            for (i = 1; i < 100000 && !time; i++){
+                mov =  _searchAlg.IDS(s , whoAmI, i);
+            }
+            time = false;    
            System.out.println("/////////////////////////////////////////////////////////////////////////");
            System.out.println("MOVIMIENTO ELEGIDO: " + mov);
            System.out.println("/////////////////////////////////////////////////////////////////////////");
-           Move move = new Move (mov, 5, 6, SearchType.MINIMAX);
+           Move move = new Move (mov, 5, i, SearchType.MINIMAX);
 
         //System.out.println("Tablero s despues de turno");
         //System.out.println(s.toString());
         
-           return move;
-        //}  
+           return move; 
     }
     
     /**
@@ -83,18 +77,24 @@ public class Iniesta implements IPlayer, IAuto{
      * de joc.
      * TODO: printear hasta dnd ha llegado en este caso.
      */
+    @Override
     public void timeout(){
         System.out.println("You are so slow...");
+        this.time = true;
     }
+    
     /**
      *  Retorna el nom del jugador que s'utlilitza per visualització a la UI
      * 
      * @return Nom del jugador
      */
-    
     @Override
     public String getName(){
         return this.name;
+    }
+
+    private ArrayList<ArrayList<Point>> getStables(GameStatus s) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
     
     

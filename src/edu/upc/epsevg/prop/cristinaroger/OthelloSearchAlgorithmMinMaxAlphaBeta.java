@@ -35,6 +35,8 @@ public class OthelloSearchAlgorithmMinMaxAlphaBeta extends OthelloSearchAlgorith
      */
     public final static int MIN_VAL = Integer.MIN_VALUE+1;// -2147483647
     
+    public static int board = 0;
+    
     
     /**
      * Find the best column to put the next piece of given color of the given
@@ -69,8 +71,8 @@ public class OthelloSearchAlgorithmMinMaxAlphaBeta extends OthelloSearchAlgorith
         
         // Do search
         int bestHeuristic = Integer.MIN_VALUE;
-        int alpha = TaulerWithHeuristic.MIN_VAL;
-        int beta = TaulerWithHeuristic.MAX_VAL;
+        int alpha = MIN_VAL;
+        int beta = MAX_VAL;
         ArrayList <Point> moves = s.getMoves();
         Point bestMove = new Point (-1, -1);
         
@@ -92,15 +94,7 @@ public class OthelloSearchAlgorithmMinMaxAlphaBeta extends OthelloSearchAlgorith
                 
 //                System.out.println("Entered FOR | inside findNextBestMove");
 //                System.out.println("i = " + i);
-                
-                //if(!s.canMove(moves.get(i), s.getCurrentPlayer())){
-                //    
-                //    System.out.println("Current Player can not move. This should never be read");
-                //
-                //} else {
-                //    continue;
-                //}
-                
+
                 //Create copy and move piece
                 GameStatus nextT = new GameStatus(s);
                 
@@ -122,7 +116,6 @@ public class OthelloSearchAlgorithmMinMaxAlphaBeta extends OthelloSearchAlgorith
                     if(bestHeuristic < movHeur || bestMove.equals(new Point(-1,-1))) {
 
 //                        System.out.println("Entered IF: bestHeuristic<movHeur or bestMove = -1 -1 | inside findNextBestMove");
-//
 //                        System.out.println("1 movHeur: " + movHeur);
 //                        System.out.println("1 BestMove: " + bestMove);
 //                        System.out.println("1 BestHeur: " + bestHeuristic);
@@ -194,7 +187,7 @@ public class OthelloSearchAlgorithmMinMaxAlphaBeta extends OthelloSearchAlgorith
             
 //            System.out.println("returning getHeuristic(s) to minmax");
 //            if (s.isGameOver()) return getHeuristic(s, whoAmI, true);
-//            
+
             return getHeuristic(s, whoAmI);
         }
         
@@ -203,9 +196,9 @@ public class OthelloSearchAlgorithmMinMaxAlphaBeta extends OthelloSearchAlgorith
         
 //        System.out.println("heuristic:" + heuristic);
 //        System.out.println("moves: ");
-        for (int i = 0; i < moves.size(); i++){
-            System.out.println(moves.get(i));
-        }
+//        for (int i = 0; i < moves.size(); i++){
+//            System.out.println(moves.get(i));
+//        }
  
         if (!moves.isEmpty()){
             
@@ -299,60 +292,103 @@ public class OthelloSearchAlgorithmMinMaxAlphaBeta extends OthelloSearchAlgorith
 
     private int getHeuristic(GameStatus s, CellType whoAmI) {
         
-//        System.out.println("Entered getHeuristic. s: ");
-//        System.out.println(s.toString());
-        
         //Check if the game was won
         if (s.isGameOver()){
-            
-//            System.out.println("Entered IF: game over | inside getHeuristic");
-//            System.out.println("jugador actual juego terminado: " + s.getCurrentPlayer());
-//            System.out.println("jugador actual juego ganado:    " + s.GetWinner());
- //         if (!Ended){
                 if (s.GetWinner() == whoAmI) {
-
-//                    System.out.println("Entered IF: winner = current player | inside getHeuristic");
-//                    System.out.println("Returning max_val to getHeuristic");
-
                     return MAX_VAL;
                 }
-
-//                System.out.println("Returning min_val to getHeuristic");
-
+                
                 return MIN_VAL;
             }
-//            else {
-//                if (s.GetWinner() == s.getCurrentPlayer()) {
-//
-//    //                System.out.println("Entered IF: winner = current player | inside getHeuristic");
-//    //                System.out.println("Returning max_val to getHeuristic");
-//
-//                    return MAX_VAL;
-//                }
-//
-//    //            System.out.println("Returning min_val to getHeuristic");
-//
-//                return MIN_VAL;
-//            }
-//        }
-        
         CellType rival  = CellType.opposite(s.getCurrentPlayer());
         CellType player = s.getCurrentPlayer();
         
-//        System.out.println("Rival: " + rival + s.getScore(rival) + " Player: " + player + s.getScore(player));
-//        System.out.println( "Returning: " + (s.getScore(rival) - s.getScore(player)) + " to getHeuristic");
-//        
-     return s.getScore(player) - s.getScore(rival);
+        int heuristic = 0;
+        
+        heuristic += getHeuristicCorner(s,rival,player);
+        
+        heuristic -= s.getMoves().size()*100;    //num mov rival
+        heuristic += getHeuristicWalls(s,rival,player);
+        heuristic += s.getScore(player) - s.getScore(rival);
+        heuristic += stableChips(s, rival, player);
+      
+     return heuristic;
     }   
     
-    @Override
-    public Point IDS (GameStatus s, CellType whoAmI){
+    private int stableChips(GameStatus s, CellType rival, CellType player){
+        int heuristic = 0;
         
-        Point bestMov = new Point(-1, -1);
-        
-        for (int i = 1; i < 2; i++){
-            bestMov = findNextBestMove(s,whoAmI, 4);
+        for (int i = 0; i <= board; i++){
+            for (int j = 0; j <= board; j++){
+                
+            }
         }
+        
+        return heuristic;
+    }
+    private int getHeuristicCorner(GameStatus s, CellType rival, CellType player){
+        int heuristic = 0;
+        if (s.getPos(0, 0) == rival){
+            heuristic -= 5000;
+        } else if( s.getPos(0, 0) == player){
+            heuristic += 5000;
+        }
+        if (s.getPos(0, board) == rival){
+            heuristic -= 5000;
+        } else if( s.getPos(0, board) == player){
+            heuristic += 5000;
+        }
+        if (s.getPos(board, 0) == rival){
+            heuristic -= 5000;
+        } else if( s.getPos(board, 0) == player){
+            heuristic += 5000;
+        }
+        if (s.getPos(board, board) == rival){
+            heuristic -= 5000;
+        } else if( s.getPos(board, board) == player){
+            heuristic += 5000;
+        }
+        
+        return heuristic;
+    }
+
+    private int getHeuristicWalls(GameStatus s, CellType rival, CellType player){
+        int heuristic = 0;
+        
+        for (int i = 0; i <= board; i++){
+            if(s.getPos(0, i) == rival){
+                heuristic -= 1000;
+            } else if (s.getPos(0, i) == player){
+                heuristic += 1000;
+            }
+            if(s.getPos(i, 0) == rival){
+                heuristic -= 1000;
+            } else if (s.getPos(i, 0) == player){
+                heuristic += 1000;
+            }
+            if(s.getPos(board, i) == rival){
+                heuristic -= 1000;
+            } else if (s.getPos(board, i) == player){
+                heuristic += 1000;
+            }
+            if(s.getPos(i, board) == rival){
+                heuristic -= 1000;
+            } else if (s.getPos(i, board) == player){
+                heuristic += 1000;
+            }
+        }
+        
+        return heuristic;
+    }
+ 
+    @Override
+    public Point IDS (GameStatus s, CellType whoAmI, int Depth){
+        
+        board = s.getSize() -1;
+        
+        Point bestMov;
+        
+        bestMov = findNextBestMove(s,whoAmI, Depth);
         
         return bestMov;
     }

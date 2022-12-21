@@ -27,5 +27,5 @@ public abstract class OthelloSearchAlgorithm {
      */
     public abstract Point findNextBestMove(GameStatus s, CellType whoAmI, int maxDepth);
 
-    public abstract Point IDS(GameStatus s, CellType whoAmI);
+    public abstract Point IDS(GameStatus s, CellType whoAmI, int Depth);
 }

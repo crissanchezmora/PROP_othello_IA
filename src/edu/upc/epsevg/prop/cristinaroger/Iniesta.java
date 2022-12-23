@@ -32,6 +32,8 @@ public class Iniesta implements IPlayer, IAuto{
     
     public CellType whoAmI;
     
+    private int board = 0;
+    
     private boolean time = false;
     
     public Iniesta (String name) {
@@ -46,24 +48,22 @@ public class Iniesta implements IPlayer, IAuto{
     @Override
     public Move move(GameStatus s) {
         whoAmI = s.getCurrentPlayer();
+        board = s.getSize() -1;
         //System.out.println("Jugador actual" + s.getCurrentPlayer());
+//        
+//        ArrayList<ArrayList<Point>> Stabilization = getStables(s);
+//        ArrayList<Point> IniestaStable = Stabilization.get(0);
+//        ArrayList<Point> RivalStable = Stabilization.get(1);
         
         ArrayList<Point> moves = s.getMoves();
-        
-        ArrayList<ArrayList<Point>> Stabilization = getStables(s);
-        ArrayList<Point> IniestaStable = Stabilization.get(0);
-        ArrayList<Point> RivalStable = Stabilization.get(1);
-        
+
         if(moves.isEmpty()) s.skipTurn(); 
             Point mov = null;
-            int i = 0;
-            for (i = 1; i < 100000 && !time; i++){
+            int i = 6;
+            //for (i = 1; i < 100000 && !time; i++){
                 mov =  _searchAlg.IDS(s , whoAmI, i);
-            }
-            time = false;    
-           System.out.println("/////////////////////////////////////////////////////////////////////////");
-           System.out.println("MOVIMIENTO ELEGIDO: " + mov);
-           System.out.println("/////////////////////////////////////////////////////////////////////////");
+            //}
+           time = false;
            Move move = new Move (mov, 5, i, SearchType.MINIMAX);
 
         //System.out.println("Tablero s despues de turno");
@@ -94,7 +94,87 @@ public class Iniesta implements IPlayer, IAuto{
     }
 
     private ArrayList<ArrayList<Point>> getStables(GameStatus s) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+       
+        CellType rival  = CellType.opposite(s.getCurrentPlayer());
+        CellType player = s.getCurrentPlayer();
+        
+        ArrayList<Point> playerStable = getStable(player, s);
+        ArrayList<Point> rivalStable = getStable(rival, s);
+        
+        ArrayList<ArrayList<Point>> stables = new ArrayList<>();
+        stables.add(playerStable);
+        stables.add(rivalStable);
+        return stables;
+    }
+    
+    private ArrayList<Point> getStable(CellType player, GameStatus s) {
+        ArrayList<Point> playerStable = new ArrayList<>();
+        playerStable.add(new Point(0 ,0));
+        int cont = 0;
+        
+        //Cantonada superior esquerra
+        int x = 0;
+        int y = 0;
+        boolean stable;
+        if (s.getPos(x, y).equals(player)) {
+            stable = true;
+            for (y = 0; y <= board && stable; y++) {
+                int j = 0;
+                for (int i = y; i >= 0 && stable; i--) {
+                    if (s.getPos(j, y).equals(player)) {
+                        ++cont;
+                        ++j;
+                    } else {
+                        stable = false;
+                        playerStable.add(new Point(j, i));
+                    }
+                }
+                if (!stable) {
+                    stable = true;
+                    j = 0;
+                    for (int i = y; i >= 0 && stable; i--) {
+                        if (s.getPos(i, j).equals(player)) {
+                            ++cont;
+                            ++j;
+                        } else {
+                            stable = false;
+                            playerStable.add(new Point(i, j));
+                        }
+                    }
+                }
+            }
+        }
+        
+        x = 0;
+        y = board;
+        if (s.getPos(x, y).equals(player)) {
+            stable = true;
+            while (stable) {
+                
+            }
+        }
+        
+        x = board;
+        y = 0;
+        if (s.getPos(x, y).equals(player)) {
+            stable = true;
+            while (stable) {
+                
+            }
+        }
+        
+        x = board;
+        y = board;
+        if (s.getPos(x, y).equals(player)) {
+            stable = true;
+            while (stable) {
+                
+            }
+        }
+        
+        playerStable.get(0).move(0, cont);
+        
+        return playerStable;
     }
     
     

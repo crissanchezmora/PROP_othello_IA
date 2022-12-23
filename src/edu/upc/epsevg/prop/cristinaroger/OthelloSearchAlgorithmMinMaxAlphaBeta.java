@@ -150,7 +150,7 @@ public class OthelloSearchAlgorithmMinMaxAlphaBeta extends OthelloSearchAlgorith
                            "having explored " + _current_leaf_exploration_count + " leaves " +
                            "and " + _current_node_exploration_count + " nodes " +
                            "in " + incr_ms  + "ms (" + incr_s + "s)");
-        
+        System.out.println("//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////");
 //       System.out.println("Returning bestMove: " + bestMove +" to findNextBestMovement depth: " + maxDepth);
         
         return bestMove;
@@ -307,10 +307,10 @@ public class OthelloSearchAlgorithmMinMaxAlphaBeta extends OthelloSearchAlgorith
         
         heuristic += getHeuristicCorner(s,rival,player);
         
-        heuristic -= s.getMoves().size()*100;    //num mov rival
+        heuristic -= s.getMoves().size()*50;    //num mov rival
         heuristic += getHeuristicWalls(s,rival,player);
         heuristic += s.getScore(player) - s.getScore(rival);
-        heuristic += stableChips(s, rival, player);
+        //heuristic += stableChips(s, rival, player);
       
      return heuristic;
     }   
@@ -329,24 +329,24 @@ public class OthelloSearchAlgorithmMinMaxAlphaBeta extends OthelloSearchAlgorith
     private int getHeuristicCorner(GameStatus s, CellType rival, CellType player){
         int heuristic = 0;
         if (s.getPos(0, 0) == rival){
-            heuristic -= 5000;
+            heuristic -= 700;
         } else if( s.getPos(0, 0) == player){
-            heuristic += 5000;
+            heuristic += 700;
         }
         if (s.getPos(0, board) == rival){
-            heuristic -= 5000;
+            heuristic -= 700;
         } else if( s.getPos(0, board) == player){
-            heuristic += 5000;
+            heuristic += 700;
         }
         if (s.getPos(board, 0) == rival){
-            heuristic -= 5000;
+            heuristic -= 700;
         } else if( s.getPos(board, 0) == player){
-            heuristic += 5000;
+            heuristic += 700;
         }
         if (s.getPos(board, board) == rival){
-            heuristic -= 5000;
+            heuristic -= 700;
         } else if( s.getPos(board, board) == player){
-            heuristic += 5000;
+            heuristic += 700;
         }
         
         return heuristic;
@@ -357,24 +357,24 @@ public class OthelloSearchAlgorithmMinMaxAlphaBeta extends OthelloSearchAlgorith
         
         for (int i = 0; i <= board; i++){
             if(s.getPos(0, i) == rival){
-                heuristic -= 1000;
+                heuristic -= 200;
             } else if (s.getPos(0, i) == player){
-                heuristic += 1000;
+                heuristic += 200;
             }
             if(s.getPos(i, 0) == rival){
-                heuristic -= 1000;
+                heuristic -= 200;
             } else if (s.getPos(i, 0) == player){
-                heuristic += 1000;
+                heuristic += 200;
             }
             if(s.getPos(board, i) == rival){
-                heuristic -= 1000;
+                heuristic -= 200;
             } else if (s.getPos(board, i) == player){
-                heuristic += 1000;
+                heuristic += 200;
             }
             if(s.getPos(i, board) == rival){
-                heuristic -= 1000;
+                heuristic -= 200;
             } else if (s.getPos(i, board) == player){
-                heuristic += 1000;
+                heuristic += 200;
             }
         }
         

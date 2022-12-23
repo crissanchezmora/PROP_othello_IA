@@ -60,9 +60,9 @@ public class Iniesta implements IPlayer, IAuto{
         if(moves.isEmpty()) s.skipTurn(); 
             Point mov = null;
             int i = 6;
-            //for (i = 1; i < 100000 && !time; i++){
+            for (i = 2; i < 100000 && !time; i+=2){
                 mov =  _searchAlg.IDS(s , whoAmI, i);
-            //}
+            }
            time = false;
            Move move = new Move (mov, 5, i, SearchType.MINIMAX);
 

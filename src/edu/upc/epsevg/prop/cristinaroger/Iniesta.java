@@ -9,7 +9,7 @@ import edu.upc.epsevg.prop.othello.SearchType;
 import java.awt.Point;
 import java.util.ArrayList;
 /**
- * Jugador basic
+ * Jugador
  * @author cristina
  * @author roger
  */
@@ -24,22 +24,22 @@ public class Iniesta implements IPlayer, IAuto{
     private boolean time = false;
     
     /**
-     * Counter for the nodes explored in the current exploration
+     * Contador per els nodes a l'exploració actual
      */
     int _current_node_exploration_count = 0;
     
     /**
-     * Counter for the leaves explored in the current exploration 
+     * Contador per les fulles a l'exploració actual
      */
     int _current_leaf_exploration_count = 0;
     
     /**
-     * Max value to use when finding a winning state
+     * Valor màxim per a un estat de victoria
      */
     public final static int MAX_VAL = Integer.MAX_VALUE-1;  //  2147483646
     
     /**
-     * Min value to use when finding a losing state
+     * Valor mínim per a un estat de victoria
      */
     public final static int MIN_VAL = Integer.MIN_VALUE+1;// -2147483646
     
@@ -62,31 +62,41 @@ public class Iniesta implements IPlayer, IAuto{
         ArrayList<Point> moves = s.getMoves();
 
         if(moves.isEmpty()) s.skipTurn(); 
-            Point mov = null;
-            int i;
-            for (i = 2; i < 100000 && !time; i+=2){
-                mov =  IDS(s , whoAmI, i);
+        
+        Point mov = null;
+        int i;
 
-            }
-           time = false;
-           Move move = new Move (mov, _current_node_exploration_count, i, SearchType.MINIMAX);
+        //Implementació IDS
+        for (i = 2; i < 100000 && !time; i+=2){
+            mov =  findNextBestMove(s , whoAmI, i);
+            if (time) i-=2; //No contem la última, perque no ha acabat
 
-           return move; 
+        }
+        time = false;
+
+        //Per a executar sense timeout, comentar el for i utilitzar la linia d'abaix
+        //mov = findNextBestMove(s, whoAmI, 8);
+        Move move = new Move (mov, _current_node_exploration_count, i-2, SearchType.MINIMAX);
+
+//           System.out.println("Selected movement " + move + ' ' +
+//                           "with heuristic " + heurLastInTime + ' ' +
+//                           "for " + s.getCurrentPlayer() + ' ' +
+//                           "having explored " + _current_leaf_exploration_count + " leaves " +
+//                           "and " + _current_node_exploration_count + " nodes ");
+
+        return move; 
     }
     
     /**
      * Ens avisa que hem de parar la cerca en curs perquè s'ha exhaurit el temps
      * de joc.
-     * TODO: printear hasta dnd ha llegado en este caso.
      */
     @Override
     public void timeout(){
-        System.out.println("You are so slow...");
         this.time = true;
     }
     
     /**
-     *  Retorna el nom del jugador que s'utlilitza per visualització a la UI
      * 
      * @return Nom del jugador
      */
@@ -96,13 +106,13 @@ public class Iniesta implements IPlayer, IAuto{
     }
     
     /**
-     * Find the best column to put the next piece of given color of the given
-     * game t using MiniMax with alpha-beta pruning
+     * Troba les millors coordenades per a moure la seguent peça utilitzant
+     * un minimax amb poda alpha beta, i IDS
      * 
-     * @param s The state of game
+     * @param s Estat de la partida
      * @param whoAmI
-     * @param maxDepth The maximum depth to conduct the search
-     * @return The best found movement using C4Heuristic
+     * @param maxDepth Profunditat màxima a la que volem arribr
+     * @return Millor moviment trobat amb la nostra heurística
      */
     public Point findNextBestMove(GameStatus s, CellType whoAmI, int maxDepth){
         
@@ -110,24 +120,24 @@ public class Iniesta implements IPlayer, IAuto{
             return new Point (-1,-1);
         }
         
-        // Init search profiling
+        //Inicialitza els perfils de la cerca
         _current_node_exploration_count = 0; 
         _current_leaf_exploration_count = 0;
         long ms_begin = System.currentTimeMillis();
         
-        // Do search
+        //Fa la cerca
         int bestHeuristic = Integer.MIN_VALUE;
         int alpha = MIN_VAL;
         int beta = MAX_VAL;
         ArrayList <Point> moves = s.getMoves();
         Point bestMove = new Point (-1, -1);
         
-        //Check valid movement
+        //Comprova si el moviment es vàlid
         if (!moves.isEmpty()){
             
             for (int i = 0; i < moves.size(); i++){
 
-                //Create copy and move piece
+                //Crea una copia de s i mou la peça
                 GameStatus nextT = new GameStatus(s);
                 
                 nextT.movePiece(moves.get(i));
@@ -145,7 +155,7 @@ public class Iniesta implements IPlayer, IAuto{
         if (bestMove.equals(new Point (-1, -1))){
             s.skipTurn();
         }
-        // End search profiling and output results
+        // Acaba la cerca i imprimeix informació del resultat
         long ms_end = System.currentTimeMillis();
         long incr_ms = (ms_end - ms_begin);
         double incr_s = (double)incr_ms/1000.0;
@@ -159,29 +169,26 @@ public class Iniesta implements IPlayer, IAuto{
         System.out.println("//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////");
 
         heurLastInTime = bestHeuristic;
-        pointLastInTime = bestMove;
         if(time) return pointLastInTime;
+        pointLastInTime = bestMove;
         
         return bestMove;
     }
     
     /**
-     * Find the worst (if !isMax) or best (if isMax) next heuristic given the 
-     * color of the given game t and depth maxDepth within the bounds [alpha, 
-     * beta]
+     * Troba la pitjor (if !isMax) o millor (if isMax) seguent heurística per a 
+     * jugador actual de s a la profunditat maxDepth dintre dels límits alpha beta
      * 
-     * @param t The state of game
-     * @param maxDepth The maximum depth to conduct the search
-     * @param isMax Flag to decide if the heuristic has to be maximized or 
-     * minimized
-     * @param alpha Lower bound to search
-     * @param beta Upper bound to search
-     * @return The worst found movement using C4Heuristic
+     * @param s Estat del tauler
+     * @param maxDepth Profunditat màxima de la cerca actual
+     * @param isMax Boleà per saber si estem en un max o en un min
+     * @param alpha Límit inferior de la cerca
+     * @param beta Límit superior de la cerca
+     * @return La millor herística trobada
      */
     private int minmax(GameStatus s, CellType whoAmI, int maxDepth, boolean isMax, int alpha, int beta) {
         
         if (time){
-            
             return heurLastInTime;
         }
 
@@ -199,70 +206,62 @@ public class Iniesta implements IPlayer, IAuto{
         if (!moves.isEmpty()){
 
             for (int i = 0; i < moves.size(); i++) {
-                
-//                System.out.println("Entered FOR | inside minmax");
-//                System.out.println("i = " + i);
-                
-                // Move
 
                 GameStatus nextT = new GameStatus(s);
-                //System.out.println("nextT (copy of s): ");
-                //System.out.println(nextT.toString());
                 
                 try { nextT.movePiece(moves.get(i)); } catch (Exception e) {}
                 
                 int movHeur;
                     movHeur = minmax(nextT, whoAmI ,maxDepth-1, !isMax, alpha, beta);
 
-                // Evaluate movement
-
+                // Evalua el moviment
                 if(isMax) {
                     
-                    // Update max heuristic
+                    // Actualitza la heurística més alta
                     heuristic = Math.max(heuristic, movHeur);
 
-                    // Prune if we exceeded upper bound
+                    // Poda si excedim el límit superior
                     if (beta <= heuristic){
                         
                         break;
                     }
-                    // Update alpha (lower bound)
-                    alpha = Math.max(alpha, heuristic);
                     
-//                    System.out.println("Alpha: " + alpha);
+                    // Actualitza alpha
+                    alpha = Math.max(alpha, heuristic);
                     
                 } else {
                     
-//                    System.out.println("Entered ELSE: !isMax | inside minmax");
-                    
-                    // Update min heuristic
+                    // Actualitza la heurística més baixa
                     heuristic = Math.min(heuristic, movHeur);
                     
-//                    System.out.println("Heuristic: " + heuristic);
-
-                    // Prune if we exceeded lower bound
+                    // Poda si excedim el límit inferior
                     if (heuristic <= alpha){
                                                
                         break;
                     }
 
-                    // Update beta (upper bound)
+                    // Actualitza beta 
                     beta = Math.min(beta, heuristic);
-                    
-//                    System.out.println("Beta: " + beta);
                 }  
             }
         }
         else {
             heuristic = getHeuristic(s, whoAmI);
         }
-//        System.out.println("Returning heuristic: " + heuristic +" to minmax");
+        
         return heuristic;
     }
 
+    /**
+     * Calcula la heurística
+     * 
+     * @param s Estat del tauler
+     * @param whoAmI Guarda si iniesta es P1 o P2
+     * @return Millor heurística trobada
+     */
     private int getHeuristic(GameStatus s, CellType whoAmI) {
         
-        //Check if the game was won
+        //Comprova si ha acabat el joc
         if (s.isGameOver()){
                 if (s.GetWinner() == whoAmI) {
                     return MAX_VAL;
@@ -280,38 +279,56 @@ public class Iniesta implements IPlayer, IAuto{
         heuristic += getHeuristicWalls(s,rival,player);
         heuristic += s.getScore(player) - s.getScore(rival);
         if (s.getScore(player) + s.getScore(rival) < 25) heuristic += getHeuristicHashTag(s, player);
-        //heuristic -= getHeuristicHashTag(s, rival); ??? Lo ponemos o no es necesario ???
-        //heuristic += stableChips(s, rival, player);
-      
-     return heuristic;
+        
+        if (time) return heurLastInTime;
+        
+        return heuristic;
     }   
     
+    /**
+     * Suma o resta heurística depenent de quantes cantonades hi ha amb una fitxa
+     * i depenent de quin jugador es la fitxa
+     * 
+     * @param s Estat del tauler
+     * @param rival jugador rival actual
+     * @param player jugador actual
+     * @return Heurística respecte a les cantonades
+     */
     private int getHeuristicCorner(GameStatus s, CellType rival, CellType player){
         int heuristic = 0;
         if (s.getPos(0, 0) == rival){
-            heuristic -= 700;
+            heuristic -= 800;
         } else if( s.getPos(0, 0) == player){
-            heuristic += 700;
+            heuristic += 800;
         }
         if (s.getPos(0, board) == rival){
-            heuristic -= 700;
+            heuristic -= 800;
         } else if( s.getPos(0, board) == player){
-            heuristic += 700;
+            heuristic += 800;
         }
         if (s.getPos(board, 0) == rival){
-            heuristic -= 700;
+            heuristic -= 800;
         } else if( s.getPos(board, 0) == player){
-            heuristic += 700;
+            heuristic += 800;
         }
         if (s.getPos(board, board) == rival){
-            heuristic -= 700;
+            heuristic -= 800;
         } else if( s.getPos(board, board) == player){
-            heuristic += 700;
+            heuristic += 800;
         }
         
         return heuristic;
     }
 
+      /**
+     * Suma o resta heurística depenent de quantes fitxes hi ha a les parets
+     * i depenent de quin jugador són les fitxes
+     * 
+     * @param s Estat del tauler
+     * @param rival jugador rival actual
+     * @param player jugador actual
+     * @return Heurística respecte a les parets
+     */
     private int getHeuristicWalls(GameStatus s, CellType rival, CellType player){
         int heuristic = 0;
         
@@ -341,9 +358,20 @@ public class Iniesta implements IPlayer, IAuto{
         return heuristic;
     }
     
+      /**
+     * Hi ha certes posicions que no són recomanables tenir en un early game,
+     * resta heurística segons si tenim fitxes en alguna d'aquestes posicions.
+     * El dibuix que fan les posicions no recomanables recorden a un Hashtag,
+     * d'aquí el nom de la funció.
+     * 
+     * @param s Estat del tauler
+     * @param player jugador actual
+     * @return Heurística respecte al diseny HashTag
+     */
     private int getHeuristicHashTag(GameStatus s, CellType player) {
         int heuristic = 0;
         for (int i = 0; i <= board; ++i) {
+            
             //horitzontal superior
             if (s.getPos(1, i).equals(player)) {
                 heuristic -= 300;
@@ -368,14 +396,5 @@ public class Iniesta implements IPlayer, IAuto{
         
         return heuristic;
     }
-    public Point IDS (GameStatus s, CellType whoAmI, int Depth){
-        
-        board = s.getSize() -1;
-        
-        Point bestMov;
-        
-        bestMov = findNextBestMove(s,whoAmI, Depth);
-        
-        return bestMov;
-    }
+
 }
